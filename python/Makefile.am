@@ -10,6 +10,7 @@ pkgpyexec_LTLIBRARIES = _rpm.la _rpmb.la _rpms.la
 pkgpyexec_DATA = rpm/__init__.py rpm/transaction.py
 
 _rpm_la_LDFLAGS = -module -avoid-version -shared
+_rpm_la_LDFLAGS += -buildlevel '$(BUILDLEVEL_INFO)'
 _rpm_la_LIBADD = \
 	$(top_builddir)/lib/librpm.la \
 	$(top_builddir)/rpmio/librpmio.la \
@@ -33,6 +34,7 @@ _rpm_la_SOURCES = rpmmodule.c rpmsystem-py.h \
 	rpmts-py.c rpmts-py.h
 
 _rpmb_la_LDFLAGS = -module -avoid-version -shared
+_rpmb_la_LDFLAGS += -buildlevel '$(BUILDLEVEL_INFO)'
 _rpmb_la_LIBADD = \
 	$(top_builddir)/build/librpmbuild.la \
 	$(top_builddir)/lib/librpm.la \
@@ -43,6 +45,7 @@ _rpmb_la_SOURCES = rpmbmodule.c rpmsystem-py.h \
 	spec-py.c spec-py.h
 
 _rpms_la_LDFLAGS = -module -avoid-version -shared
+_rpms_la_LDFLAGS += -buildlevel '$(BUILDLEVEL_INFO)'
 _rpms_la_LIBADD = \
         $(top_builddir)/sign/librpmsign.la \
         $(top_builddir)/lib/librpm.la \

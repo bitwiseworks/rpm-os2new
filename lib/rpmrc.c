@@ -20,6 +20,11 @@
 #define __power_pc() 0
 #endif
 
+#ifdef __OS2__
+#define INCL_DOS
+#include <os2.h>
+#endif
+
 #ifdef HAVE_SYS_AUXV_H
 #include <sys/auxv.h>
 #endif
@@ -467,11 +472,17 @@ static void setDefaults(void)
 	macrofiles = rstrscat(NULL, confdir, "/macros", ":",
 				confdir, "/macros.d/macros.*", ":",
 				confdir, "/platform/%{_target}/macros", ":",
+#ifdef __OS2__ // @FIXME YD this breaks upgrades! hardcoded in macrofiles listing (ticket#135)
+				confdir, "/platform/%{_target_cpu}-os2-emx/macros", ":",
+#endif
 				confdir, "/fileattrs/*.attr", ":",
   				confdir, "/" RPMCANONVENDOR "/macros", ":",
 				SYSCONFDIR "/rpm/macros.*", ":",
 				SYSCONFDIR "/rpm/macros", ":",
 				SYSCONFDIR "/rpm/%{_target}/macros", ":",
+#ifdef __OS2__
+				SYSCONFDIR "/rpm/%{_target_cpu}-os2-emx/macros", ":",
+#endif
 				"~/.rpmmacros", NULL);
     }
 #else
@@ -500,7 +511,11 @@ static rpmRC doReadRC(rpmrcCtx ctx, const char * urlfn)
 	s = se = next;
 
 	/* Find end-of-line. */
+#ifndef __OS2__
 	while (*se && *se != '\n') se++;
+#else
+	while (*se && *se != '\r' && *se != '\n') se++;
+#endif
 	if (*se != '\0') *se++ = '\0';
 	next = se;
 

@@ -41,7 +41,11 @@ const char * rpmcliPipeOutput = NULL;
 
 const char * rpmcliRcfile = NULL;
 
+#ifndef __OS2__
 const char * rpmcliRootDir = "/";
+#else
+const char * rpmcliRootDir = "/@unixroot";
+#endif
 
 rpmQueryFlags rpmcliQueryFlags;
 

@@ -21,7 +21,20 @@ int main(int argc, char *argv[])
     off_t payload_size;
     FD_t gzdi;
     
+#ifdef __OS2__
+    _fsetmode( stdin, "b");
+    _fsetmode( stdout, "b");
+#endif
+
     setprogname(argv[0]);	/* Retrofit glibc __progname */
+#ifdef __OS2__
+    /* XXX glibc churn sanity */
+    if (__progname == NULL) {
+       if ((__progname = strrchr(argv[0], '/')) != NULL) __progname++;
+       else __progname = argv[0];
+    }
+#endif
+
     rpmReadConfigFiles(NULL, NULL);
     if (argc == 1)
 	fdi = fdDup(STDIN_FILENO);

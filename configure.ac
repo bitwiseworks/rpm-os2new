@@ -49,7 +49,12 @@ if test "$GCC" = yes; then
         ],[])
         CFLAGS=$old_cflags
     done
-    CFLAGS="$CFLAGS -fPIC -DPIC -D_REENTRANT -Wall -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes $RPMCFLAGS"
+    case "$host" in
+        *os2*) ;;
+        *)
+           CFLAGS="$CFLAGS -fPIC -DPIC" ;;
+    esac
+    CFLAGS="$CFLAGS -D_REENTRANT -Wall -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes $RPMCFLAGS"
 fi
 export CFLAGS
 
@@ -66,10 +71,10 @@ a=`ls -l foo.chmodtest | awk '{print substr($1,1,10)}'`
 rm -f foo.chmodtest
 if test "$a" = "-rwxr-xr-x"; then
     AC_MSG_RESULT(yes)
-    FIXPERMS=a+rX,u+w,g-w,o-w 
+    FIXPERMS=a+rX,u+w,g-w,o-w
 else
     AC_MSG_RESULT(no (tell your OS vendor about GNU fileutils))
-    FIXPERMS=a+r,u+w,g-w,o-w 
+    FIXPERMS=a+r,u+w,g-w,o-w
 fi
 AC_SUBST(FIXPERMS)
 
@@ -90,30 +95,30 @@ fi
 dnl
 dnl Find some common programs
 dnl
-AC_PATH_PROGS(__7ZIP, [7zip 7za 7z], /usr/bin/7za, $MYPATH)
-AC_PATH_PROG(__BZIP2, bzip2, /usr/bin/bzip2, $MYPATH)
-AC_PATH_PROG(__CAT, cat, /bin/cat, $MYPATH)
-AC_PATH_PROG(__CHGRP, chgrp, /bin/chgrp, $MYPATH)
-AC_PATH_PROG(__CHMOD, chmod, /bin/chmod, $MYPATH)
-AC_PATH_PROG(__CHOWN, chown, /bin/chown, $MYPATH)
-AC_PATH_PROG(__CP, cp, /bin/cp, $MYPATH)
-AC_PATH_PROG(__CPIO, cpio, /bin/cpio, $MYPATH)
-AC_PATH_PROG(__CURL, curl, /usr/bin/curl, $MYPATH)
-AC_PATH_PROG(__FILE, file, /usr/bin/file, $MYPATH)
-AC_PATH_PROG(__GPG, gpg, /usr/bin/gpg, $MYPATH)
-AC_PATH_PROG(__GREP, grep, /bin/grep, $MYPATH)
-AC_PATH_PROG(__GZIP, gzip, /bin/gzip, $MYPATH)
-AC_PATH_PROG(__UNZIP, unzip, /usr/bin/unzip, $MYPATH)
-AC_PATH_PROG(__ID, id, /usr/bin/id, $MYPATH)
-AC_PATH_PROG(__INSTALL, install, /usr/bin/install, $MYPATH)
-AC_PATH_PROG(__LRZIP, lrzip, /usr/bin/lrzip, $MYPATH)
-AC_PATH_PROG(__LZIP, lzip, /usr/bin/lzip, $MYPATH)
-AC_PATH_PROG(__XZ, xz, /usr/bin/xz, $MYPATH)
-AC_PATH_PROG(__MAKE, make, /usr/bin/make, $MYPATH)
-AC_PATH_PROG(__MKDIR, mkdir, /bin/mkdir, $MYPATH)
-AC_PATH_PROG(__MV, mv, /bin/mv, $MYPATH)
-AC_PATH_PROG(__PATCH, patch, /usr/bin/patch, $MYPATH)
-AC_PATH_PROG(__RESTORECON, restorecon, /sbin/restorecon, $MYPATH)
+AC_PATH_PROGS(__7ZIP, [7zip 7za 7z], /@unixroot/usr/bin/7za, $MYPATH)
+AC_PATH_PROG(__BZIP2, bzip2, /@unixroot/usr/bin/bzip2, $MYPATH)
+AC_PATH_PROG(__CAT, cat, /@unixroot/usr/bin/cat, $MYPATH)
+AC_PATH_PROG(__CHGRP, chgrp, /@unixroot/usr/bin/chgrp, $MYPATH)
+AC_PATH_PROG(__CHMOD, chmod, /@unixroot/usr/bin/chmod, $MYPATH)
+AC_PATH_PROG(__CHOWN, chown, /@unixroot/usr/bin/chown, $MYPATH)
+AC_PATH_PROG(__CP, cp, /@unixroot/usr/bin/cp, $MYPATH)
+AC_PATH_PROG(__CPIO, cpio, /@unixroot/usr/bin/cpio, $MYPATH)
+AC_PATH_PROG(__CURL, curl, /@unixroot/usr/bin/curl, $MYPATH)
+AC_PATH_PROG(__FILE, file, /@unixroot/usr/bin/file, $MYPATH)
+AC_PATH_PROG(__GPG, gpg, /@unixroot/usr/bin/gpg, $MYPATH)
+AC_PATH_PROG(__GREP, grep, /@unixroot/usr/bin/grep, $MYPATH)
+AC_PATH_PROG(__GZIP, gzip, /@unixroot/usr/bin/gzip, $MYPATH)
+AC_PATH_PROG(__UNZIP, unzip, /@unixroot/usr/bin/unzip, $MYPATH)
+AC_PATH_PROG(__ID, id, /@unixroot/usr/bin/id, $MYPATH)
+AC_PATH_PROG(__INSTALL, install, /@unixroot/usr/bin/install, $MYPATH)
+AC_PATH_PROG(__LRZIP, lrzip, /@unixroot/usr/bin/lrzip, $MYPATH)
+AC_PATH_PROG(__LZIP, lzip, /@unixroot/usr/bin/lzip, $MYPATH)
+AC_PATH_PROG(__XZ, xz, /@unixroot/usr/bin/xz, $MYPATH)
+AC_PATH_PROG(__MAKE, make, /@unixroot/usr/bin/make, $MYPATH)
+AC_PATH_PROG(__MKDIR, mkdir, /@unixroot/usr/bin/mkdir, $MYPATH)
+AC_PATH_PROG(__MV, mv, /@unixroot/usr/bin/mv, $MYPATH)
+AC_PATH_PROG(__PATCH, patch, /@unixroot/usr/bin/patch, $MYPATH)
+AC_PATH_PROG(__RESTORECON, restorecon, /@unixroot/usr/sbin/restorecon, $MYPATH)
 AC_MSG_CHECKING(old version of patch)
     PATCHVERSION=`patch --version 2>&1`
 
@@ -125,33 +130,33 @@ AC_MSG_CHECKING(old version of patch)
 	AC_MSG_RESULT(patch later then 2.2 found)
     fi
 
-AC_PATH_PROG(__PERL, perl, /usr/bin/perl, $MYPATH)
-AC_PATH_PROG(__PGP, pgp, /usr/bin/pgp, $MYPATH)
-AC_PATH_PROG(__PYTHON, python, /usr/bin/python, $MYPATH) 
-AC_PATH_PROG(__RM, rm, /bin/rm, $MYPATH)
-AC_PATH_PROG(__RSH, rsh, /usr/bin/rsh, $MYPATH)
-AC_PATH_PROG(__SED, sed, /bin/sed, $MYPATH)
-AC_PATH_PROG(__SEMODULE, semodule, /usr/bin/semodule, $MYPATH)
-AC_PATH_PROG(__SSH, ssh, /usr/bin/ssh, $MYPATH)
-AC_PATH_PROG(__TAR, tar, /bin/tar, $MYPATH)
+AC_PATH_PROG(__PERL, perl, /@unixroot/usr/bin/perl, $MYPATH)
+AC_PATH_PROG(__PGP, pgp, /@unixroot/usr/bin/pgp, $MYPATH)
+AC_PATH_PROG(__PYTHON, python, /@unixroot/usr/bin/python, $MYPATH)
+AC_PATH_PROG(__RM, rm, /@unixroot/usr/bin/rm, $MYPATH)
+AC_PATH_PROG(__RSH, rsh, /@unixroot/usr/bin/rsh, $MYPATH)
+AC_PATH_PROG(__SED, sed, /@unixroot/usr/bin/sed, $MYPATH)
+AC_PATH_PROG(__SEMODULE, semodule, /@unixroot/usr/bin/semodule, $MYPATH)
+AC_PATH_PROG(__SSH, ssh, /@unixroot/usr/bin/ssh, $MYPATH)
+AC_PATH_PROG(__TAR, tar, /@unixroot/usr/bin/tar, $MYPATH)
 
-AC_PATH_PROG(__LD, ld, /usr/bin/ld, $MYPATH)
-AC_PATH_PROG(__NM, nm, /usr/bin/nm, $MYPATH)
-AC_PATH_PROG(__OBJCOPY, objcopy, /usr/bin/objcopy, $MYPATH)
-AC_PATH_PROG(__OBJDUMP, objdump, /usr/bin/objdump, $MYPATH)
-AC_PATH_PROG(__STRIP, strip, /usr/bin/strip, $MYPATH)
+AC_PATH_PROG(__LD, ld, /@unixroot/usr/bin/ld, $MYPATH)
+AC_PATH_PROG(__NM, nm, /@unixroot/usr/bin/nm, $MYPATH)
+AC_PATH_PROG(__OBJCOPY, objcopy, /@unixroot/usr/bin/objcopy, $MYPATH)
+AC_PATH_PROG(__OBJDUMP, objdump, /@unixroot/usr/bin/objdump, $MYPATH)
+AC_PATH_PROG(__STRIP, strip, /@unixroot/usr/bin/strip, $MYPATH)
 
-AC_PATH_PROG(__GIT, git, /usr/bin/git, $MYPATH)
-AC_PATH_PROG(__HG, hg, /usr/bin/hg, $MYPATH)
-AC_PATH_PROG(__BZR, bzr, /usr/bin/bzr, $MYPATH)
-AC_PATH_PROG(__QUILT, quilt, /usr/bin/quilt, $MYPATH)
+AC_PATH_PROG(__GIT, git, /@unixroot/usr/bin/git, $MYPATH)
+AC_PATH_PROG(__HG, hg, /@unixroot/usr/bin/hg, $MYPATH)
+AC_PATH_PROG(__BZR, bzr, /@unixroot/usr/bin/bzr, $MYPATH)
+AC_PATH_PROG(__QUILT, quilt, /@unixroot/usr/bin/quilt, $MYPATH)
 
 AC_PATH_PROG(__FAKECHROOT, fakechroot, no, $MYPATH)
 AM_CONDITIONAL(HAVE_FAKECHROOT, [test "$__FAKECHROOT" != "no"])
 
 dnl see if we have a mkdir that supports `-p' for rpmbuild's purposes
 AC_PROG_MKDIR_P
-if ! echo $MKDIR_P | grep -q mkdir; then 
+if ! echo $MKDIR_P | grep -q mkdir; then
   __MKDIR_P="`echo ${prefix}/lib/rpm/mkinstalldirs`"
 else
   __MKDIR_P=$MKDIR_P
@@ -162,7 +167,7 @@ AC_DEFINE_UNQUOTED(__MKDIR_P, "${__MKDIR_P}",
 AC_SUBST(__MKDIR_P)
 
 #=================
-# Check for zlib library. 
+# Check for zlib library.
 
 WITH_ZLIB_INCLUDE=
 WITH_ZLIB_LIB=
@@ -170,7 +175,7 @@ WITH_ZLIB_LIB=
 AC_CHECK_HEADERS([zlib.h],[
   AS_IF([test -z "${WITH_ZLIB_LIB}"],[
     for zlib in z gz ; do
-      AC_CHECK_LIB(${zlib}, gzread, 
+      AC_CHECK_LIB(${zlib}, gzread,
 	[WITH_ZLIB_LIB="-l${zlib}"; break])
     done
 
@@ -263,7 +268,7 @@ if test "$with_beecrypt" = yes ; then
     AC_CHECK_LIB(beecrypt, mpfprintln, [
       WITH_BEECRYPT_LIB="-lbeecrypt"
     ],[
-      AC_MSG_ERROR([missing required library 'beecrypt']) 
+      AC_MSG_ERROR([missing required library 'beecrypt'])
     ])
     AC_CHECK_HEADER([beecrypt/api.h], [AC_DEFINE(HAVE_BEECRYPT_API_H, 1, [Define to 1 if you have the <beecrypt/api.h> header file.])
     ])
@@ -274,8 +279,8 @@ AC_SUBST(WITH_BEECRYPT_INCLUDE)
 
 #=================
 # Check for NSS library.
-# We need nss.h from NSS which needs nspr.h. Unfortunately both glibc and NSS 
-# have a header named nss.h... so make extra check for NSS's sechash.h 
+# We need nss.h from NSS which needs nspr.h. Unfortunately both glibc and NSS
+# have a header named nss.h... so make extra check for NSS's sechash.h
 # which we use too and hopefully is slightly more unique to NSS.
 WITH_NSS_INCLUDE=
 WITH_NSS_LIB=
@@ -306,10 +311,10 @@ AC_CHECK_HEADER([magic.h], [
       WITH_MAGIC_INCLUDE=
       WITH_MAGIC_LIB="-lmagic"
     ],[
-      AC_MSG_ERROR([missing required library 'libmagic']) 
+      AC_MSG_ERROR([missing required library 'libmagic'])
     ])
 ],[
-      AC_MSG_ERROR([missing required header magic.h]) 
+      AC_MSG_ERROR([missing required header magic.h])
 ])
 
 AC_SUBST(WITH_MAGIC_INCLUDE)
@@ -378,7 +383,7 @@ yes )
 	#error Berkeley DB too old
 	#endif
       ])
-    ],[ WITH_DB_LIB=-ldb ], 
+    ],[ WITH_DB_LIB=-ldb ],
       [ AC_MSG_ERROR([Berkeley DB version >= 4.5 required])
     ])
   ],[
@@ -726,7 +731,7 @@ esac],
 [with_acl=no])
 
 AS_IF([test "$with_acl" = yes],[
-  dnl verification uses non-portable acl_equiv_mode() 
+  dnl verification uses non-portable acl_equiv_mode()
   AC_CHECK_HEADER([acl/libacl.h],[
     AC_CHECK_LIB(acl,[acl_equiv_mode],[with_acl=yes],[
       AC_MSG_ERROR([--with-acl given, but libacl not found or not suitable])])
@@ -771,7 +776,13 @@ AS_IF([test "$enable_plugins" != no],[
   AC_SUBST(DBUS_CFLAGS)
   AC_SUBST(DBUS_LIBS)
 ])
+if test "$build_os" = os2-emx ; then
+  with_dbus=no
+fi
 AM_CONDITIONAL(DBUS, [test "$with_dbus" = yes])
+if test "$build_os" = os2-emx ; then
+  with_dbus=no
+fi
 
 with_dmalloc=no
 AC_ARG_WITH(dmalloc, [AS_HELP_STRING([--with-dmalloc],[build with dmalloc debugging support])])
@@ -803,11 +814,11 @@ changequote([, ])
 
 dnl permit overriding build_vendor for "canonical rpm vendor"
 RPMCANONVENDOR="$build_vendor"
-AC_ARG_WITH([vendor], 
+AC_ARG_WITH([vendor],
   AS_HELP_STRING([--with-vendor=VENDOR], [specify rpm vendor name]),
   [RPMCANONVENDOR=$withval])
 AC_DEFINE_UNQUOTED([RPMCANONVENDOR],["${RPMCANONVENDOR}"],[canonical vendor])
-	   
+
 RPMCANONOS="$host_os_noversion"
 RPMCANONGNU="$host_os_gnu"
 AC_SUBST(RPMCANONVENDOR)
@@ -815,7 +826,7 @@ AC_SUBST(RPMCANONOS)
 AC_SUBST(RPMCANONGNU)
 
 RUNDIR="/run"
-AC_ARG_WITH([rundir], 
+AC_ARG_WITH([rundir],
   AS_HELP_STRING([--with-rundir=RUNDIR], [specify run-time variable directory]),
   [RUNDIR=$withval])
 AC_DEFINE_UNQUOTED([RUNDIR],["${RUNDIR}"],[run-time variable directory])
@@ -839,7 +850,7 @@ fi
 AM_CONDITIONAL([WITH_INTERNAL_DB],[test "$with_external_db" = no])
 AM_CONDITIONAL([DOXYGEN],[test "$DOXYGEN" != no])
 AM_CONDITIONAL([HACKINGDOCS],[test "$with_hackingdocs" = yes])
-
+AM_CONDITIONAL(BUILD_OS_IS_OS2, [test "$build_os" = os2-emx])
 AC_PATH_PROG(AUTOM4TE,autom4te,:)
 
 AC_SUBST([dirstamp],[\${am__leading_dot}dirstamp])
@@ -847,7 +858,7 @@ AC_SUBST([dirstamp],[\${am__leading_dot}dirstamp])
 AC_CONFIG_FILES([Makefile
 	rpmio/Makefile lib/Makefile build/Makefile sign/Makefile
 	po/Makefile.in scripts/Makefile fileattrs/Makefile
-	misc/Makefile 
+	misc/Makefile
 	doc/Makefile
 	python/Makefile
  	luaext/Makefile

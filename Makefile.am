@@ -91,7 +91,11 @@ pkginclude_HEADERS += build/rpmfc.h
 pkginclude_HEADERS += build/rpmspec.h
 
 
+if BUILD_OS_IS_OS2
+rpmbindir = $(bindir)
+else
 rpmbindir = `echo $(bindir) | $(SED) -e s,usr/bin,bin,`
+endif
 rpmbin_PROGRAMS = rpm
 
 bin_PROGRAMS =		rpm2cpio rpmbuild rpmdb rpmkeys rpmsign rpmspec
@@ -178,6 +182,10 @@ rpmlibexec_PROGRAMS +=	rpmdeps
 rpmdeps_SOURCES =	tools/rpmdeps.c
 rpmdeps_LDADD =		lib/librpm.la rpmio/librpmio.la build/librpmbuild.la @WITH_POPT_LIB@
 
+rpmlibexec_PROGRAMS +=	os2deps
+os2deps_SOURCES =	tools/os2deps.c
+os2deps_LDADD =		@WITH_POPT_LIB@
+
 bin_PROGRAMS +=		rpmgraph
 rpmgraph_SOURCES =	tools/rpmgraph.c
 rpmgraph_LDADD =	lib/librpm.la rpmio/librpmio.la @WITH_POPT_LIB@
@@ -237,9 +245,9 @@ rpmvar_DATA =
 
 install-exec-hook:
 	@rm -f $(DESTDIR)$(bindir)/rpmquery
-	@LN_S@ ../../bin/rpm $(DESTDIR)$(bindir)/rpmquery
+	@LN_S@ $(bindir)/rpm$(EXEEXT) $(DESTDIR)$(bindir)/rpmquery
 	@rm -f $(DESTDIR)$(bindir)/rpmverify
-	@LN_S@ ../../bin/rpm $(DESTDIR)$(bindir)/rpmverify
+	@LN_S@ $(bindir)/rpm$(EXEEXT) $(DESTDIR)$(bindir)/rpmverify
 
 install-data-local:
 	DESTDIR="$(DESTDIR)" pkglibdir="$(rpmconfigdir)" \

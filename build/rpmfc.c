@@ -16,6 +16,12 @@
 #include <rpm/rpmfi.h>
 #include <rpm/rpmstrpool.h>
 
+#ifdef __OS2__
+#include <sys/socket.h>
+/* Use socketpair instead of pipe because of select */
+#define pipe(p) socketpair(AF_UNIX, SOCK_STREAM, 0, p)
+#endif
+
 #include "lib/rpmfi_internal.h"		/* rpmfiles stuff for now */
 #include "build/rpmbuild_internal.h"
 
@@ -508,6 +514,9 @@ static int rpmfcHelper(rpmfc fc, int ix,
     int rc = 0;
     regex_t *exclude = NULL;
     regex_t *exclude_from = NULL;
+#ifdef __OS2__
+    char N2[PATH_MAX];
+#endif
 
     /* If the entire path is filtered out, there's nothing more to do */
     exclude_from = rpmfcAttrReg(depname, "exclude", "from");
@@ -536,8 +545,25 @@ static int rpmfcHelper(rpmfc fc, int ix,
 	if (!err)
 	    err = parseDep(depav, depac, &N, &EVR, &Flags);
 
+#ifdef __EMX__
+	strcpy( N2, "");
+	// YD need to add /@unixroot/usr remapping
+	if (!strncmp( N, "/bin", 4)) {
+	    strcpy( N2, "/@unixroot/usr");
+	}
+	// YD need to add /@unixroot remapping
+	if (!strncmp( N, "/usr/bin", 8)) {
+	    strcpy( N2, "/@unixroot");
+	}
+	strcat( N2, N);
+#endif
+
 	if (!err) {
+#ifndef __OS2__
 	    rpmds ds = rpmdsSingleNS(fc->pool, tagN, namespace, N, EVR, Flags);
+#else
+	    rpmds ds = rpmdsSingleNS(fc->pool, tagN, namespace, N2, EVR, Flags);
+#endif
 
 	    /* Add to package and file dependencies unless filtered */
 	    if (regMatch(exclude, rpmdsDNEVR(ds)+2) == 0) {
@@ -566,6 +592,11 @@ exit:
 static const struct rpmfcTokens_s rpmfcTokens[] = {
   { "directory",		RPMFC_INCLUDE },
 
+#ifdef __OS2__
+  { "32-bit DLL",		RPMFC_OS2|RPMFC_INCLUDE },
+  { "32-bit OS/2",		RPMFC_OS2|RPMFC_INCLUDE },
+  { "32-bit PM",		RPMFC_OS2|RPMFC_INCLUDE },
+#endif
   { "ELF 32-bit",		RPMFC_ELF32|RPMFC_INCLUDE },
   { "ELF 64-bit",		RPMFC_ELF64|RPMFC_INCLUDE },
 
