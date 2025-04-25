@@ -503,14 +503,6 @@ typedef rpmRC (*rpmrichParseFunction) (void *cbdata, rpmrichParseType type,
  */
 rpmRC rpmrichParse(const char **dstrp, char **emsg, rpmrichParseFunction cb, void *cbdata);
 
-
-/**
- * Return if current depenency is rich
- * @param dep		the dependency
- * @return		1 is dependency is a rich 0 otherwise
- */
-int rpmdsIsRich(rpmds dep);
-
 /**
  * Parse a rich dependency string for a specific tag
  * @param dstrp		pointer to sting, will be updated

@@ -70,14 +70,6 @@ int main(int argc, char *argv[])
 
     xsetprogname(argv[0]); /* Portability call -- see system.h */
 
-#ifdef __OS2__
-    setprogname(argv[0]);	/* Retrofit glibc __progname */
-    /* XXX glibc churn sanity */
-    if (__progname == NULL) {
-       if ((__progname = strrchr(argv[0], '/')) != NULL) __progname++;
-       else __progname = argv[0];
-    }
-#endif
     optCon = rpmcliInit(argc, argv, optionsTable);
 
     /* Set the major mode based on argv[0] */

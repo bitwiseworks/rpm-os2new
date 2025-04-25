@@ -45,7 +45,7 @@ librpm_la_SOURCES = \
 	rpmtriggers.h rpmtriggers.c rpmvs.c rpmvs.h
 
 librpm_la_LDFLAGS = -version-info $(rpm_version_info)
-librpm_la_LDFLAGS += '$(BUILDLEVEL_INFO)'
+librpm_la_LDFLAGS += -buildlevel '$(BUILDLEVEL_INFO)'
 
 librpm_la_LIBADD = \
 	$(top_builddir)/rpmio/librpmio.la \
