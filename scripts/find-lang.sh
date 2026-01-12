@@ -57,7 +57,7 @@ QT=#
 MAN=#
 HTML=#
 MO=
-MO_NAME=${NAMES[0]}.lang
+MO_NAME=
 ALL_NAME=#
 NO_ALL_NAME=
 while test $# -gt 0 ; do
@@ -96,7 +96,7 @@ while test $# -gt 0 ; do
 		shift
 		;;
 	* )
-		if [ $MO_NAME != ${NAMES[$#]}.lang ]; then
+		if [ -n "$MO_NAME" ]; then
 		    NAMES[${#NAMES[@]}]=$MO_NAME
 		fi
 		MO_NAME=${1}
@@ -104,6 +104,10 @@ while test $# -gt 0 ; do
 		;;
     esac
 done    
+
+if [ -z "$MO_NAME" ]; then
+    MO_NAME=${NAMES[0]}.lang
+fi
 
 if [ -f $MO_NAME ]; then
     rm $MO_NAME
@@ -117,7 +121,7 @@ s<'"$TOP_DIR"'<<
 '"$NO_ALL_NAME$MO"'s<\(.*/locale/\)\([^/_]\+\)\(.*/'"$NAME"'\.mo$\)<%lang(\2) \1\2\3<
 s<^\([^%].*\)<<
 s<%lang(C) <<
-/^$/d' > $MO_NAME
+/^$/d' >> $MO_NAME
 
 find "$TOP_DIR" -type d|sed '
 s<'"$TOP_DIR"'<<
